@@ -119,10 +119,54 @@ namespace linc
 			}
 		}
 
-		//// Sound Banks
+    void fmod_set_param_by_name(const ::String &paramName, float value)
+    {
+      auto result = FMOD::Studio::System::setParameterByName(paramName.c_str(), value);
 
-		void fmod_load_bank(const ::String& bankFilePath)
-		{
+      if (result != FMOD_OK)
+      {
+        if(fmod_debug) printf("FMOD failed to SET GLOBAL PARAM %s: %s\n", paramName.c_str(), FMOD_ErrorString(result));
+      }
+    }
+    void fmod_set_listener_attributes(int listener, float posX, float posY, float posZ, float velX, float velY, float velZ, float forwardX, float forwardY, float forwardZ, float upX, float upY, float upZ, float attenuationX, float attenuationY, float attenuationZ)
+    {
+      const FMOD_3D_ATTRIBUTES attributes = {
+        { posX, posY, posZ },
+        { velX, velY, velZ},
+        { forwardX, forwardY, forwardZ },
+        { upX, upY, upZ }
+      };
+
+      const FMOD_VECTOR attenuation = { attenuationX, attenuationY, attenuationZ };
+
+      auto result = FMOD::Studio::System::setListenerAttributes(listener, &attributes, &attenuation);
+
+      if (result != FMOD_OK)
+      {
+        if(fmod_debug) printf("FMOD failed to SET Listener Attributes: %s\n", paramName.c_str(), FMOD_ErrorString(result));
+      }
+    }
+    void fmod_set_listener_attributes_no_atten(int listener, float posX, float posY, float posZ, float velX, float velY, float velZ, float forwardX, float forwardY, float forwardZ, float upX, float upY, float upZ)
+    {
+      const FMOD_3D_ATTRIBUTES attributes = {
+        { posX, posY, posZ },
+        { velX, velY, velZ},
+        { forwardX, forwardY, forwardZ },
+        { upX, upY, upZ }
+      };
+
+      auto result = FMOD::Studio::System::setListenerAttributes(listener, &attributes);
+
+      if (result != FMOD_OK)
+      {
+        if(fmod_debug) printf("FMOD failed to SET Listener Attributes: %s\n", paramName.c_str(), FMOD_ErrorString(result));
+      }
+    }
+
+    //// Sound Banks
+
+    void fmod_load_bank(const ::String &bankFilePath)
+    {
 			if (loadedBanks.find(bankFilePath) != loadedBanks.end())
 			{
 				return;
@@ -185,7 +229,55 @@ namespace linc
 			}
 		}
 
-		void fmod_create_event_instance_named(const ::String& eventPath, const ::String& eventInstanceName)
+    void fmod_create_event_instance_one_shot_at(const ::String &eventPath, float posX, float posY, float posZ, float velX, float velY, float velZ, float forwardX, float forwardY, float forwardZ, float upX, float upY, float upZ)
+    {
+			FMOD::Studio::EventDescription* eventDescription;
+			auto result = fmodSoundSystem->getEvent(eventPath.c_str(), &eventDescription);
+			if (result != FMOD_OK)
+			{
+				if(fmod_debug) printf("FMOD failed to load event description %s: %s\n", eventPath.c_str(), FMOD_ErrorString(result));
+				return;
+			}
+
+			FMOD::Studio::EventInstance* tempEvnInst;
+			result = eventDescription->createInstance(&tempEvnInst);
+			if (result != FMOD_OK)
+			{
+				if(fmod_debug) printf("FMOD failed to create instance of event %s: %s\n", eventPath.c_str(), FMOD_ErrorString(result));
+				return;
+			}
+			
+			result = tempEvnInst->start();
+			if (result != FMOD_OK)
+			{
+				if(fmod_debug) printf("FMOD failed to start instance of event %s: %s\n", eventPath.c_str(), FMOD_ErrorString(result));
+				return;
+			}
+
+      const FMOD_3D_ATTRIBUTES attributes = {
+        { posX, posY, posZ },
+        { velX, velY, velZ},
+        { forwardX, forwardY, forwardZ },
+        { upX, upY, upZ }
+      };
+      result = tempEvnInst->second->set3DAttributes(&attributes);
+
+      if (result != FMOD_OK)
+      {
+        if(fmod_debug) printf("FMOD failed to SET 3D Attributes of event instance %s: %s\n", eventInstanceName.c_str(), FMOD_ErrorString(result));
+				return;
+      }
+
+			// Tell FMOD API to clean up memory as soon as the event is over
+			result = tempEvnInst->release();
+			if (result != FMOD_OK)
+			{
+				if(fmod_debug) printf("FMOD failed to release instance of event %s: %s\n", eventPath.c_str(), FMOD_ErrorString(result));
+				return;
+			}
+    }
+
+    void fmod_create_event_instance_named(const ::String& eventPath, const ::String& eventInstanceName)
 		{
 			auto existingEventInstance = loadedEventInstances.find(eventInstanceName);
 			if (existingEventInstance != loadedEventInstances.end())
@@ -415,6 +507,28 @@ namespace linc
 			}
 		}
 
+    void fmod_set_event_instance_3d_attributes(const ::String &eventInstanceName, float posX, float posY, float posZ, float velX, float velY, float velZ, float forwardX, float forwardY, float forwardZ, float upX, float upY, float upZ)
+    {
+			auto targetEvent = loadedEventInstances.find(eventInstanceName);
+			if (targetEvent != loadedEventInstances.end())
+			{
+        const FMOD_3D_ATTRIBUTES attributes = {
+          { posX, posY, posZ },
+          { velX, velY, velZ},
+          { forwardX, forwardY, forwardZ },
+          { upX, upY, upZ }
+        };
+				auto result = targetEvent->second->set3DAttributes(&attributes);
+
+				if (result != FMOD_OK)
+				{
+					if(fmod_debug) printf("FMOD failed to SET 3D Attributes of event instance %s: %s\n", eventInstanceName.c_str(), FMOD_ErrorString(result));
+				}
+			} else {
+				if(fmod_debug) printf("Event %s is not loaded!\n", eventInstanceName.c_str());
+			}
+    }
+
 		//// Callbacks
 
 		::String GetEventInstancePath(FMOD::Studio::EventInstance* eventInstance) {
@@ -445,8 +559,9 @@ namespace linc
 			return FMOD_ERR_EVENT_NOTFOUND;
 		}
 
-		void fmod_set_callback_tracking_for_event_instance(const ::String& eventInstanceName) {
-			auto existingEventInstance = loadedEventInstances.find(eventInstanceName);
+    void fmod_set_callback_tracking_for_event_instance(const ::String &eventInstanceName)
+    {
+      auto existingEventInstance = loadedEventInstances.find(eventInstanceName);
 			if (existingEventInstance != loadedEventInstances.end())
 			{
 				existingEventInstance->second->setCallback(GetCallbackType);
@@ -463,9 +578,9 @@ namespace linc
 			{
 				if(fmod_debug) printf("Could not set callback tracking on %s because it wasn't found\n", eventInstanceName.c_str());
 			}
-		}
+    }
 
-		bool fmod_check_callbacks_for_event_instance(const ::String& eventInstanceName, unsigned int callbackEventMask){
+    bool fmod_check_callbacks_for_event_instance(const ::String& eventInstanceName, unsigned int callbackEventMask){
 			auto existingEventInstance = loadedEventInstances.find(eventInstanceName);
 			if (existingEventInstance != loadedEventInstances.end())
 			{

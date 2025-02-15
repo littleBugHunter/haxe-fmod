@@ -67,6 +67,53 @@ namespace linc
 		 */
 		extern void update_fmod_async();
 
+
+		/**
+		 * Sets a global parameter value by name, including the path if needed.
+		 * \param[paramName] ::String Parameter name, including the path if needed (case-insensitive)
+		 * \param[value] float Value for given name.
+		 */
+    extern void fmod_set_param_by_name(const ::String& paramName, float value);
+
+		/**
+		 * Sets the 3D attributes of the listener.
+     * \param[listener] int Index of listener to set 3D attributes on. Listeners are indexed from 0, to FMOD_MAX_LISTENERS - 1, in a multi-listener environment.
+		 * \param[posX] float X Position in world space used for panning and attenuation
+		 * \param[posY] float Y Position in world space used for panning and attenuation
+		 * \param[posZ] float Z Position in world space used for panning and attenuation
+		 * \param[velocityX] float X Velocity in world space used for doppler
+		 * \param[velocityY] float Y Velocity in world space used for doppler
+		 * \param[velocityZ] float Z Velocity in world space used for doppler
+		 * \param[forwardX] float X Forwards orientation, must be of unit length (1.0) and perpendicular to up
+		 * \param[forwardY] float Y Forwards orientation, must be of unit length (1.0) and perpendicular to up
+		 * \param[forwardZ] float Z Forwards orientation, must be of unit length (1.0) and perpendicular to up
+		 * \param[upX] float X Upwards orientation, must be of unit length (1.0) and perpendicular to forward
+		 * \param[upY] float Y Upwards orientation, must be of unit length (1.0) and perpendicular to forward
+		 * \param[upZ] float Z Upwards orientation, must be of unit length (1.0) and perpendicular to forward
+		 * \param[attenuationX] float X Position used for calculating attenuation
+		 * \param[attenuationY] float Y Position used for calculating attenuation
+		 * \param[attenuationZ] float Z Position used for calculating attenuation
+		 */
+		extern void fmod_set_listener_attributes(int listener, float posX, float posY, float posZ, float velX, float velY, float velZ, float forwardX, float forwardY, float forwardZ, float upX, float upY, float upZ, float attenuationX, float attenuationY, float attenuationZ );
+
+		/**
+		 * Sets the 3D attributes of the listener.
+     * \param[listener] int Index of listener to set 3D attributes on. Listeners are indexed from 0, to FMOD_MAX_LISTENERS - 1, in a multi-listener environment.
+		 * \param[posX] float X Position in world space used for panning and attenuation
+		 * \param[posY] float Y Position in world space used for panning and attenuation
+		 * \param[posZ] float Z Position in world space used for panning and attenuation
+		 * \param[velocityX] float X Velocity in world space used for doppler
+		 * \param[velocityY] float Y Velocity in world space used for doppler
+		 * \param[velocityZ] float Z Velocity in world space used for doppler
+		 * \param[forwardX] float X Forwards orientation, must be of unit length (1.0) and perpendicular to up
+		 * \param[forwardY] float Y Forwards orientation, must be of unit length (1.0) and perpendicular to up
+		 * \param[forwardZ] float Z Forwards orientation, must be of unit length (1.0) and perpendicular to up
+		 * \param[upX] float X Upwards orientation, must be of unit length (1.0) and perpendicular to forward
+		 * \param[upY] float Y Upwards orientation, must be of unit length (1.0) and perpendicular to forward
+		 * \param[upZ] float Z Upwards orientation, must be of unit length (1.0) and perpendicular to forward
+		 */
+		extern void fmod_set_listener_attributes_no_atten(int listener, float posX, float posY, float posZ, float velX, float velY, float velZ, float forwardX, float forwardY, float forwardZ, float upX, float upY, float upZ );
+
 		//// Sound Banks
 
 		/**
@@ -106,6 +153,14 @@ namespace linc
 		 * \param[eventPath] ::String the bank path of the event
 		 */
 		extern void fmod_create_event_instance_one_shot(const ::String& eventPath);
+
+		/**
+		 * Create and play an event instance in a fire-and-forget fashion
+		 * There is no way to interact with these events once they are started
+		 * Follows the Master Track rules set in the Event's settings in FMOD Studio (Max Instances, Stealing, and probably more)
+		 * \param[eventPath] ::String the bank path of the event
+		 */
+		extern void fmod_create_event_instance_one_shot_at(const ::String& eventPath, float posX, float posY, float posZ, float velX, float velY, float velZ, float forwardX, float forwardY, float forwardZ, float upX, float upY, float upZ );
 
 		/**
 		 * Create and play an event instance and store a reference to it
@@ -193,6 +248,24 @@ namespace linc
 		 * \param[value] float the new value to set the param to
 		 */
 		extern void fmod_set_event_instance_param(const ::String& eventInstanceName, const ::String& paramName, float value);
+
+		/**
+		 * Set the 3d attributes of a loaded event
+		 * \param[eventInstanceName] ::String the name of the event that contains the parameter to set
+		 * \param[posX] float X Position in world space used for panning and attenuation
+		 * \param[posY] float Y Position in world space used for panning and attenuation
+		 * \param[posZ] float Z Position in world space used for panning and attenuation
+		 * \param[velocityX] float X Velocity in world space used for doppler
+		 * \param[velocityY] float Y Velocity in world space used for doppler
+		 * \param[velocityZ] float Z Velocity in world space used for doppler
+		 * \param[forwardX] float X Forwards orientation, must be of unit length (1.0) and perpendicular to up
+		 * \param[forwardY] float Y Forwards orientation, must be of unit length (1.0) and perpendicular to up
+		 * \param[forwardZ] float Z Forwards orientation, must be of unit length (1.0) and perpendicular to up
+		 * \param[upX] float X Upwards orientation, must be of unit length (1.0) and perpendicular to forward
+		 * \param[upY] float Y Upwards orientation, must be of unit length (1.0) and perpendicular to forward
+		 * \param[upZ] float Z Upwards orientation, must be of unit length (1.0) and perpendicular to forward
+		 */
+		extern void fmod_set_event_instance_3d_attributes(const ::String& eventInstanceName, float posX, float posY, float posZ, float velX, float velY, float velZ, float forwardX, float forwardY, float forwardZ, float upX, float upY, float upZ );
 
 		//// Callbacks
 
