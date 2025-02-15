@@ -1,5 +1,7 @@
 package;
 
+import flixel.util.FlxDirection;
+import openfl.geom.Vector3D;
 import haxefmod.FmodEvents.FmodCallback;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -37,6 +39,7 @@ class PlayState extends FlxState {
 
     override public function create():Void {
         FmodManager.PlaySong(FmodSongs.MainLevel);
+        var cam = FlxG.camera;
 
         FlxG.mouse.visible = false;
         FlxG.cameras.bgColor = 0xffaaaaaa;
@@ -122,6 +125,8 @@ class PlayState extends FlxState {
         if (_justDied) {
             _status.text = "Aww, you died!";
         }
+        var cameraPos = new Vector3D((cam .viewLeft+cam.viewRight) * 0.5, (cam.viewTop + cam.viewBottom) * 0.5, 0);
+        FmodManager.SetListenerAttributes(0, cameraPos, new Vector3D(0,0,0));
 
         add(_status);
     }
@@ -140,9 +145,12 @@ class PlayState extends FlxState {
             _player.acceleration.x = _player.maxVelocity.x * 4;
         }
 
-        if (FlxG.keys.anyJustPressed([SPACE, UP, W]) && _player.isTouching(FlxObject.FLOOR)) {
-            FmodManager.PlaySoundOneShot(FmodSFX.Jump);
+        if (FlxG.keys.anyJustPressed([SPACE, UP, W]) && _player.isTouching(FlxDirection.DOWN)) {
             _player.velocity.y = -_player.maxVelocity.y / 2;
+            var position = _player.getPosition();
+            var positionVec = new Vector3D(position.x, position.y, 0);
+            var velocityVec = new Vector3D(_player.velocity.x, _player.velocity.y, 0);
+            FmodManager.PlaySoundOneShotAtPosition(FmodSFX.Jump, positionVec, velocityVec);
         }
 
         super.update(elapsed);
@@ -174,7 +182,9 @@ class PlayState extends FlxState {
 
     function getCoin(Coin:FlxObject, Player:FlxObject):Void {
         FmodManager.SetEventParameterOnSong("FadeArpIn", 1.0);
-        FmodManager.PlaySoundOneShot(FmodSFX.Coin);
+        var position = _player.getPosition();
+        var positionVec = new Vector3D(position.x, position.y, 0);
+        FmodManager.PlaySoundOneShotAtPosition(FmodSFX.Coin, positionVec, new Vector3D(0,0,0));
         Coin.kill();
         _scoreText.text = "SCORE: " + (_coins.countDead() * 100);
 
