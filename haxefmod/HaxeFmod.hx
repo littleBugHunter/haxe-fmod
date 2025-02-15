@@ -21,6 +21,13 @@ extern class HaxeFmod {
     public static function fmod_init(numChannels:Int = 128):Void;
     @:native("linc::faxe::fmod_update")
     public static function fmod_update():Void;
+    @:native("linc::faxe::fmod_set_param_by_name")
+    public static function fmod_set_param_by_name(paramName:String, value:Float):Void;
+    @:native("linc::faxe::fmod_set_listener_attributes")
+    public static function fmod_set_listener_attributes(listener:Int, posX:Float, posY:Float, posZ:Float, velX:Float, velY:Float, velZ:Float, forwardX:Float, forwardY:Float, forwardZ:Float, upX:Float, upY:Float, upZ:Float, attenuationX:Float, attenuationY:Float, attenuationZ:Float):Void;
+    @:native("linc::faxe::fmod_set_listener_attributes_no_atten")
+    public static function fmod_set_listener_attributes_no_atten(listener:Int, posX:Float, posY:Float, posZ:Float, velX:Float, velY:Float, velZ:Float, forwardX:Float, forwardY:Float, forwardZ:Float, upX:Float, upY:Float, upZ:Float):Void;
+
 
     //// Sound Banks
 
@@ -33,6 +40,8 @@ extern class HaxeFmod {
 
     @:native("linc::faxe::fmod_create_event_instance_one_shot")
     public static function fmod_create_event_instance_one_shot(eventPath:String):Void;
+    @:native("linc::faxe::fmod_create_event_instance_one_shot_at")
+    public static function fmod_create_event_instance_one_shot_at(eventPath:String, posX:Float, posY:Float, posZ:Float, velX:Float, velY:Float, velZ:Float, forwardX:Float, forwardY:Float, forwardZ:Float, upX:Float, upY:Float, upZ:Float):Void;
     @:native("linc::faxe::fmod_create_event_instance_named")
     public static function fmod_create_event_instance_named(eventPath:String, eventInstanceName:String):Void;
     @:native("linc::faxe::fmod_is_event_instance_loaded")
@@ -59,6 +68,8 @@ extern class HaxeFmod {
     public static function fmod_get_event_instance_param(eventInstanceName:String, paramName:String):Float;
     @:native("linc::faxe::fmod_set_event_instance_param")
     public static function fmod_set_event_instance_param(eventInstanceName:String, paramName:String, value:Float):Void;
+    @:native("linc::faxe::fmod_set_event_instance_3d_attributes")
+    public static function fmod_set_event_instance_3d_attributes(eventInstanceName:String, posX:Float, posY:Float, posZ:Float, velX:Float, velY:Float, velZ:Float, forwardX:Float, forwardY:Float, forwardZ:Float, upX:Float, upY:Float, upZ:Float):Void;
 
     //// Callbacks
 

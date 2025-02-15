@@ -1,5 +1,6 @@
 package haxefmod;
 
+import openfl.geom.Vector3D;
 import haxefmod.FmodEvents.FmodEventListener;
 import haxefmod.FmodManagerPrivate;
 
@@ -159,6 +160,22 @@ class FmodManager {
     **/
     public static function PlaySoundOneShot(soundPath:String) {
         FmodManagerPrivate.GetInstance().PlaySoundOneShot(soundPath);
+    }
+
+    //// Sound effects
+
+    /**
+        Plays a sound in a fire-and-forget fashion
+
+        There is no way to interact with these sounds once they are started
+
+        Follows the Master Track rules which are set in FMOD Studio (Max Instances, Stealing, and probably more)
+
+        @param soundPath bank path of the sound event in the sound bank
+        @see https://tanneris.me/FMOD-Macro-Controls
+    **/
+    public static function PlaySoundOneShotAtPosition(soundPath:String, position:Vector3D, velocity:Vector3D) {
+      FmodManagerPrivate.GetInstance().PlaySoundOneShotAtPosition(soundPath, position, velocity);
     }
 
     /**

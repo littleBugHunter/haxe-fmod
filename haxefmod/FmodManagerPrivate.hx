@@ -1,5 +1,6 @@
 package haxefmod;
 
+import openfl.geom.Vector3D;
 import haxefmod.FmodEvents.FmodCallback;
 import haxefmod.FmodEvents.FmodEvent;
 import haxefmod.FmodEvents.FmodEventListener;
@@ -208,6 +209,10 @@ class FmodManagerPrivate {
         HaxeFmod.fmod_create_event_instance_one_shot(soundPath);
     }
 
+    function PlaySoundOneShotAtPosition(soundPath:String, position:Vector3D, velocity:Vector3D) {
+        HaxeFmod.fmod_create_event_instance_one_shot_at(soundPath, position.x, position.y, position.z, velocity.x, velocity.y, velocity.z, 0, 0, 1, 0, -1, 0);
+    }
+
     private function PlaySoundWithReference(soundPath:String):String {
         var soundId = '${soundPath}-${soundIdIncrementer}';
         HaxeFmod.fmod_create_event_instance_named(soundPath, soundId);
@@ -254,6 +259,10 @@ class FmodManagerPrivate {
 
     private function SetEventParameterOnSound(soundId:String, parameterName:String, parameterValue:Float) {
         HaxeFmod.fmod_set_event_instance_param(soundId, parameterName, parameterValue);
+    }
+
+    private function SetEvent3DPositionOnSound(soundId:String, position:Vector3D, velocity:Vector3D) {
+        HaxeFmod.fmod_set_event_instance_3d_attributes(soundId, position.x, position.y, position.z, velocity.x, velocity.y, velocity.z, 0, 0, 1, 0, -1, 0);
     }
 
     //// Callbacks
