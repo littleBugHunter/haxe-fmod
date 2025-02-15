@@ -121,7 +121,7 @@ namespace linc
 
     void fmod_set_param_by_name(const ::String &paramName, float value)
     {
-      auto result = FMOD::Studio::System::setParameterByName(paramName.c_str(), value);
+      auto result = fmodSoundSystem->setParameterByName(paramName.c_str(), value);
 
       if (result != FMOD_OK)
       {
@@ -139,11 +139,11 @@ namespace linc
 
       const FMOD_VECTOR attenuation = { attenuationX, attenuationY, attenuationZ };
 
-      auto result = FMOD::Studio::System::setListenerAttributes(listener, &attributes, &attenuation);
+      auto result = fmodSoundSystem->setListenerAttributes(listener, &attributes, &attenuation);
 
       if (result != FMOD_OK)
       {
-        if(fmod_debug) printf("FMOD failed to SET Listener Attributes: %s\n", paramName.c_str(), FMOD_ErrorString(result));
+        if(fmod_debug) printf("FMOD failed to SET Listener Attributes: %s\n", FMOD_ErrorString(result));
       }
     }
     void fmod_set_listener_attributes_no_atten(int listener, float posX, float posY, float posZ, float velX, float velY, float velZ, float forwardX, float forwardY, float forwardZ, float upX, float upY, float upZ)
@@ -155,11 +155,11 @@ namespace linc
         { upX, upY, upZ }
       };
 
-      auto result = FMOD::Studio::System::setListenerAttributes(listener, &attributes);
+      auto result = fmodSoundSystem->setListenerAttributes(listener, &attributes);
 
       if (result != FMOD_OK)
       {
-        if(fmod_debug) printf("FMOD failed to SET Listener Attributes: %s\n", paramName.c_str(), FMOD_ErrorString(result));
+        if(fmod_debug) printf("FMOD failed to SET Listener Attributes: %s\n", FMOD_ErrorString(result));
       }
     }
 
@@ -260,11 +260,11 @@ namespace linc
         { forwardX, forwardY, forwardZ },
         { upX, upY, upZ }
       };
-      result = tempEvnInst->second->set3DAttributes(&attributes);
+      result = tempEvnInst->set3DAttributes(&attributes);
 
       if (result != FMOD_OK)
       {
-        if(fmod_debug) printf("FMOD failed to SET 3D Attributes of event instance %s: %s\n", eventInstanceName.c_str(), FMOD_ErrorString(result));
+        if(fmod_debug) printf("FMOD failed to SET 3D Attributes of event %s: %s\n", eventPath.c_str(), FMOD_ErrorString(result));
 				return;
       }
 

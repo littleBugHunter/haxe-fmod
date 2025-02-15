@@ -115,6 +115,14 @@ class FmodManagerPrivate {
         HaxeFmod.fmod_set_pause_for_all_events_on_bus("bus:/", false);
     }
 
+    private function SetGlobalParameter(paramName:String, value:Float) {
+        HaxeFmod.fmod_set_param_by_name(paramName, value);
+    }
+
+    private function SetListenerAttributes(listener:Int, position:Vector3D, velocity:Vector3D) {
+        HaxeFmod.fmod_set_listener_attributes_no_atten(listener, position.x, position.y, position.z, velocity.x, velocity.y, velocity.z, 0, 0, -1, 0, -1, 0);
+    }
+
     //// Music
 
     private function PlaySong(songPath:String) {
@@ -210,7 +218,7 @@ class FmodManagerPrivate {
     }
 
     function PlaySoundOneShotAtPosition(soundPath:String, position:Vector3D, velocity:Vector3D) {
-        HaxeFmod.fmod_create_event_instance_one_shot_at(soundPath, position.x, position.y, position.z, velocity.x, velocity.y, velocity.z, 0, 0, 1, 0, -1, 0);
+        HaxeFmod.fmod_create_event_instance_one_shot_at(soundPath, position.x, position.y, position.z, velocity.x, velocity.y, velocity.z, 0, 0, -1, 0, -1, 0);
     }
 
     private function PlaySoundWithReference(soundPath:String):String {
@@ -262,7 +270,7 @@ class FmodManagerPrivate {
     }
 
     private function SetEvent3DPositionOnSound(soundId:String, position:Vector3D, velocity:Vector3D) {
-        HaxeFmod.fmod_set_event_instance_3d_attributes(soundId, position.x, position.y, position.z, velocity.x, velocity.y, velocity.z, 0, 0, 1, 0, -1, 0);
+        HaxeFmod.fmod_set_event_instance_3d_attributes(soundId, position.x, position.y, position.z, velocity.x, velocity.y, velocity.z, 0, 0, -1, 0, -1, 0);
     }
 
     //// Callbacks

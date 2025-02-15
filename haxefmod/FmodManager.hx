@@ -55,6 +55,14 @@ class FmodManager {
         FmodManagerPrivate.GetInstance().CheckIfUpdateIsBeingCalled();
     }
 
+    public static function SetGlobalParameter(paramName:String, value:Float) {
+        FmodManagerPrivate.GetInstance().SetGlobalParameter(paramName, value);
+    }
+
+    public static function SetListenerAttributes(listener:Int, position:Vector3D, velocity:Vector3D) {
+        FmodManagerPrivate.GetInstance().SetListenerAttributes(listener, position, velocity);
+    }
+
     //// Music
 
     /**
