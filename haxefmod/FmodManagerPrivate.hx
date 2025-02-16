@@ -262,7 +262,7 @@ class FmodManagerPrivate {
 		HaxeFmod.fmod_release_event_instance(soundId);
 	}
 
-	private function ReleaseSoundWtihoutStop(soundId:String) {
+	private function ReleaseSoundWithoutStop(soundId:String) {
 		HaxeFmod.fmod_release_event_instance_without_stop(soundId);
 	}
 
