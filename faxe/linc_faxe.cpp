@@ -433,7 +433,7 @@ namespace linc
 			auto existingEventInstance = loadedEventInstances.find(eventInstanceName);
 			if (existingEventInstance != loadedEventInstances.end())
 			{
-				result = existingEventInstance->second->release();
+				auto result = existingEventInstance->second->release();
 				if (result != FMOD_OK)
 				{
 					if(fmod_debug) printf("FMOD failed to release event instance %s: %s\n", eventInstanceName.c_str(), FMOD_ErrorString(result));
