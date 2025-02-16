@@ -250,8 +250,32 @@ class FmodManager {
         @param parameterValue value for parameter
     **/
     public static function SetEventParameterOnSound(soundId:String, parameterName:String, parameterValue:Float) {
-        FmodManagerPrivate.GetInstance().SetEventParameterOnSound(soundId, parameterName, parameterValue);
-    }
+      FmodManagerPrivate.GetInstance().SetEventParameterOnSound(soundId, parameterName, parameterValue);
+  }
+
+  /**
+      Sets an event position on a sound
+
+      Setting a parameter when the game is paused will require a manual call to Update() for FMOD to see the change
+      @param soundId Id of a loaded sound
+      @param position the world space position
+      @param velocity the world space velocity
+  **/
+  public static function SetEventPosition(soundId:String, position:Vector3D) {
+      FmodManagerPrivate.GetInstance().SetEvent3DPositionOnSound(soundId, position);
+  }
+
+  /**
+      Sets an event position on a sound
+
+      Setting a parameter when the game is paused will require a manual call to Update() for FMOD to see the change
+      @param soundId Id of a loaded sound
+      @param position the world space position
+      @param velocity the world space velocity
+  **/
+  public static function SetEventPositionAndVelocity(soundId:String, position:Vector3D, velocity:Vector3D) {
+      FmodManagerPrivate.GetInstance().SetEvent3DPositionAndVelocityOnSound(soundId, position, velocity);
+  }
 
     /**
         Stops a sound for the provided sound Id
