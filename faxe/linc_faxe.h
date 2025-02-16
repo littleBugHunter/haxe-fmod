@@ -219,6 +219,11 @@ namespace linc
 		 * \param[eventInstanceName] ::String the name of the event instance
 		 */
 		extern void fmod_release_event_instance(const ::String& eventInstanceName);
+		/**
+		 * Release a loaded event instance from memory
+		 * \param[eventInstanceName] ::String the name of the event instance
+		 */
+		extern void fmod_release_event_instance_without_stop(const ::String& eventInstanceName);
 
 		/**
 		 * Check to see if an event instance is currently playing

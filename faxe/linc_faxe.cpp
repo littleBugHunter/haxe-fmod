@@ -428,6 +428,22 @@ namespace linc
 			}
 		}
 
+		void fmod_release_event_instance_without_stop(const ::String& eventInstanceName)
+		{
+			auto existingEventInstance = loadedEventInstances.find(eventInstanceName);
+			if (existingEventInstance != loadedEventInstances.end())
+			{
+				result = existingEventInstance->second->release();
+				if (result != FMOD_OK)
+				{
+					if(fmod_debug) printf("FMOD failed to release event instance %s: %s\n", eventInstanceName.c_str(), FMOD_ErrorString(result));
+					return;
+				}
+
+				loadedEventInstances.erase(eventInstanceName);
+			}
+		}
+
 		bool fmod_is_event_instance_playing(const ::String& eventInstanceName)
 		{
 			auto targetEvent = loadedEventInstances.find(eventInstanceName);

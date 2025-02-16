@@ -60,6 +60,8 @@ extern class HaxeFmod {
     public static function fmod_stop_event_instance_immediately(eventInstanceName:String):Void;
     @:native("linc::faxe::fmod_release_event_instance")
     public static function fmod_release_event_instance(eventInstanceName:String):Void;
+    @:native("linc::faxe::fmod_release_event_instance_without_stop")
+    public static function fmod_release_event_instance_without_stop(eventInstanceName:String):Void;
     @:native("linc::faxe::fmod_is_event_instance_playing")
     public static function fmod_is_event_instance_playing(eventInstanceName:String):Bool;
     @:native("linc::faxe::fmod_get_event_instance_playback_state")
