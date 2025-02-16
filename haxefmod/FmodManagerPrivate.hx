@@ -269,7 +269,11 @@ class FmodManagerPrivate {
         HaxeFmod.fmod_set_event_instance_param(soundId, parameterName, parameterValue);
     }
 
-    private function SetEvent3DPositionOnSound(soundId:String, position:Vector3D, velocity:Vector3D) {
+    private function SetEvent3DPositionOnSound(soundId:String, position:Vector3D) {
+        HaxeFmod.fmod_set_event_instance_3d_attributes(soundId, position.x, position.y, position.z, 0,0,0, 0, 0, -1, 0, -1, 0);
+    }
+
+    private function SetEvent3DPositionAndVelocityOnSound(soundId:String, position:Vector3D, velocity:Vector3D) {
         HaxeFmod.fmod_set_event_instance_3d_attributes(soundId, position.x, position.y, position.z, velocity.x, velocity.y, velocity.z, 0, 0, -1, 0, -1, 0);
     }
 
