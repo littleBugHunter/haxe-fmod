@@ -1,5 +1,6 @@
 package haxefmod;
 
+import openfl.geom.Vector3D;
 import haxefmod.FmodEvents.FmodEventListener;
 import haxefmod.FmodManagerPrivate;
 
@@ -193,6 +194,28 @@ class FmodManager {
         FmodManagerPrivate.GetInstance().CheckIfUpdateIsBeingCalled();
     }
 
+    //// 3D Audio
+
+    /**
+        Sets a global parameter value by name, including the path if needed
+        @param paramName name of the global parameter, including the path if needed (case-insensitive)
+        @param value value for the parameter
+    **/
+    public static function SetGlobalParameter(paramName:String, value:Float) {
+        FmodManagerPrivate.GetInstance().SetGlobalParameter(paramName, value);
+    }
+
+    /**
+        Sets the 3D attributes of a listener, used for panning, attenuation, and doppler of 3D events
+
+        @param listener index of the listener to set attributes on, starting from 0 (most games only use 1 listener)
+        @param position the world space position of the listener
+        @param velocity the world space velocity of the listener, used for the doppler effect
+    **/
+    public static function SetListenerAttributes(listener:Int, position:Vector3D, velocity:Vector3D) {
+        FmodManagerPrivate.GetInstance().SetListenerAttributes(listener, position, velocity);
+    }
+
     //// Music
 
     /**
@@ -309,6 +332,22 @@ class FmodManager {
     }
 
     /**
+        Plays a sound at a 3D position in a fire-and-forget fashion
+
+        There is no way to interact with these sounds once they are started
+
+        Follows the Master Track rules which are set in FMOD Studio (Max Instances, Stealing, and probably more)
+
+        @param soundPath bank path of the sound event in the sound bank
+        @param position the world space position of the sound
+        @param velocity the world space velocity of the sound, used for the doppler effect
+        @see https://tanneris.me/FMOD-Macro-Controls
+    **/
+    public static function PlaySoundOneShotAtPosition(soundPath:String, position:Vector3D, velocity:Vector3D) {
+        FmodManagerPrivate.GetInstance().PlaySoundOneShotAtPosition(soundPath, position, velocity);
+    }
+
+    /**
         Plays a sound and returns the Id to allow further interactions
 
         When this sound is no longer needed, call ReleaseSound to cleanup memory
@@ -371,6 +410,29 @@ class FmodManager {
     **/
     public static function SetEventParameterOnSound(soundId:String, parameterName:String, parameterValue:Float) {
         FmodManagerPrivate.GetInstance().SetEventParameterOnSound(soundId, parameterName, parameterValue);
+    }
+
+    /**
+        Sets the 3D position of a sound
+
+        Setting a position when the game is paused will require a manual call to Update() for FMOD to see the change
+        @param soundId Id of a loaded sound
+        @param position the world space position
+    **/
+    public static function SetEventPosition(soundId:String, position:Vector3D) {
+        FmodManagerPrivate.GetInstance().SetEvent3DPositionOnSound(soundId, position);
+    }
+
+    /**
+        Sets the 3D position and velocity of a sound
+
+        Setting a position when the game is paused will require a manual call to Update() for FMOD to see the change
+        @param soundId Id of a loaded sound
+        @param position the world space position
+        @param velocity the world space velocity, used for the doppler effect
+    **/
+    public static function SetEventPositionAndVelocity(soundId:String, position:Vector3D, velocity:Vector3D) {
+        FmodManagerPrivate.GetInstance().SetEvent3DPositionAndVelocityOnSound(soundId, position, velocity);
     }
 
     /**

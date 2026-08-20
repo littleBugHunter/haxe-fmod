@@ -24,6 +24,8 @@ extern void fmod_unload_bank(const ::String& path);
 
 //// Events - One shot
 extern int fmod_fire_one_shot(const ::String& eventPath);
+extern int fmod_fire_one_shot_at(const ::String& eventPath, float posX, float posY, float posZ, float velX, float velY, float velZ,
+    float forwardX, float forwardY, float forwardZ, float upX, float upY, float upZ);
 
 //// Events - Managed instances (handle-based)
 extern int fmod_create_instance(const ::String& eventPath);
@@ -37,6 +39,13 @@ extern int fmod_get_timeline_position(int handle);
 //// Parameters
 extern float fmod_get_param(int handle, const ::String& name);
 extern void fmod_set_param(int handle, const ::String& name, float value);
+extern void fmod_set_global_param(const ::String& name, float value);
+
+//// 3D Audio
+extern void fmod_set_listener_attributes(int listener, float posX, float posY, float posZ, float velX, float velY, float velZ,
+    float forwardX, float forwardY, float forwardZ, float upX, float upY, float upZ);
+extern void fmod_set_instance_3d_attributes(int handle, float posX, float posY, float posZ, float velX, float velY, float velZ,
+    float forwardX, float forwardY, float forwardZ, float upX, float upY, float upZ);
 
 //// Bus
 extern void fmod_set_bus_paused(const ::String& path, bool paused);

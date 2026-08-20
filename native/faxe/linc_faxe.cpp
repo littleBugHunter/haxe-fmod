@@ -149,6 +149,31 @@ int fmod_fire_one_shot(const ::String& eventPath) {
     return FMOD_OK;
 }
 
+int fmod_fire_one_shot_at(const ::String& eventPath, float posX, float posY, float posZ, float velX, float velY, float velZ,
+    float forwardX, float forwardY, float forwardZ, float upX, float upY, float upZ) {
+    if (!gStudioSystem) return FMOD_ERR_NOTREADY;
+
+    FMOD::Studio::EventDescription* desc;
+    FMOD_RESULT result = gStudioSystem->getEvent(eventPath.c_str(), &desc);
+    if (result != FMOD_OK) return result;
+
+    FMOD::Studio::EventInstance* instance;
+    result = desc->createInstance(&instance);
+    if (result != FMOD_OK) return result;
+
+    const FMOD_3D_ATTRIBUTES attributes = {
+        { posX, posY, posZ },
+        { velX, velY, velZ },
+        { forwardX, forwardY, forwardZ },
+        { upX, upY, upZ }
+    };
+    instance->set3DAttributes(&attributes);
+
+    instance->start();
+    instance->release();
+    return FMOD_OK;
+}
+
 //// Events - Managed instances
 
 int fmod_create_instance(const ::String& eventPath) {
@@ -217,6 +242,39 @@ float fmod_get_param(int h, const ::String& name) {
 void fmod_set_param(int h, const ::String& name, float value) {
     if (h >= 0 && h < gInstanceCount && gInstances[h])
         gInstances[h]->setParameterByName(name.c_str(), value, false);
+}
+
+void fmod_set_global_param(const ::String& name, float value) {
+    if (!gStudioSystem) return;
+    gStudioSystem->setParameterByName(name.c_str(), value);
+}
+
+//// 3D Audio
+
+void fmod_set_listener_attributes(int listener, float posX, float posY, float posZ, float velX, float velY, float velZ,
+    float forwardX, float forwardY, float forwardZ, float upX, float upY, float upZ) {
+    if (!gStudioSystem) return;
+
+    const FMOD_3D_ATTRIBUTES attributes = {
+        { posX, posY, posZ },
+        { velX, velY, velZ },
+        { forwardX, forwardY, forwardZ },
+        { upX, upY, upZ }
+    };
+    gStudioSystem->setListenerAttributes(listener, &attributes);
+}
+
+void fmod_set_instance_3d_attributes(int h, float posX, float posY, float posZ, float velX, float velY, float velZ,
+    float forwardX, float forwardY, float forwardZ, float upX, float upY, float upZ) {
+    if (h < 0 || h >= gInstanceCount || !gInstances[h]) return;
+
+    const FMOD_3D_ATTRIBUTES attributes = {
+        { posX, posY, posZ },
+        { velX, velY, velZ },
+        { forwardX, forwardY, forwardZ },
+        { upX, upY, upZ }
+    };
+    gInstances[h]->set3DAttributes(&attributes);
 }
 
 //// Bus

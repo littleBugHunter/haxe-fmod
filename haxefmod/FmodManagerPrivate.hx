@@ -1,5 +1,6 @@
 package haxefmod;
 
+import openfl.geom.Vector3D;
 import haxefmod.FmodEvents.FmodCallback;
 import haxefmod.FmodEvents.FmodEvent;
 import haxefmod.FmodEvents.FmodEventListener;
@@ -147,6 +148,16 @@ class FmodManagerPrivate {
         return backend.getBusMute(busPath);
     }
 
+    //// 3D Audio
+
+    private function SetGlobalParameter(paramName:String, value:Float) {
+        backend.setGlobalParameter(paramName, value);
+    }
+
+    private function SetListenerAttributes(listener:Int, position:Vector3D, velocity:Vector3D) {
+        backend.setListenerAttributes(listener, position.x, position.y, position.z, velocity.x, velocity.y, velocity.z, 0, 0, -1, 0, -1, 0);
+    }
+
     //// Music
 
     private function PlaySong(songPath:String) {
@@ -281,6 +292,10 @@ class FmodManagerPrivate {
         backend.createEventInstanceOneShot(soundPath);
     }
 
+    private function PlaySoundOneShotAtPosition(soundPath:String, position:Vector3D, velocity:Vector3D) {
+        backend.createEventInstanceOneShotAt(soundPath, position.x, position.y, position.z, velocity.x, velocity.y, velocity.z, 0, 0, -1, 0, -1, 0);
+    }
+
     private function PlaySoundWithReference(soundPath:String):String {
         var soundId = '${soundPath}-${soundIdIncrementer}';
         var handle = backend.createEventInstance(soundPath);
@@ -362,6 +377,20 @@ class FmodManagerPrivate {
         var handle = getHandle(soundId);
         if (handle != FmodCache.INVALID_HANDLE) {
             backend.setEventInstanceParam(handle, parameterName, parameterValue);
+        }
+    }
+
+    private function SetEvent3DPositionOnSound(soundId:String, position:Vector3D) {
+        var handle = getHandle(soundId);
+        if (handle != FmodCache.INVALID_HANDLE) {
+            backend.setEventInstance3DAttributes(handle, position.x, position.y, position.z, 0, 0, 0, 0, 0, -1, 0, -1, 0);
+        }
+    }
+
+    private function SetEvent3DPositionAndVelocityOnSound(soundId:String, position:Vector3D, velocity:Vector3D) {
+        var handle = getHandle(soundId);
+        if (handle != FmodCache.INVALID_HANDLE) {
+            backend.setEventInstance3DAttributes(handle, position.x, position.y, position.z, velocity.x, velocity.y, velocity.z, 0, 0, -1, 0, -1, 0);
         }
     }
 

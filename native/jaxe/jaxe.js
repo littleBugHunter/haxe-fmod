@@ -84,6 +84,22 @@ class jaxe {
         return jaxe.FMOD.OK;
     }
 
+    static fmod_fire_one_shot_at(eventPath, posX, posY, posZ, velX, velY, velZ, forwardX, forwardY, forwardZ, upX, upY, upZ) {
+        var desc = {};
+        var result = jaxe.gSystem.getEvent(eventPath, desc);
+        if (result != jaxe.FMOD.OK) return result;
+
+        var instance = {};
+        result = desc.val.createInstance(instance);
+        if (result != jaxe.FMOD.OK) return result;
+
+        instance.val.set3DAttributes(jaxe.buildAttributes(posX, posY, posZ, velX, velY, velZ, forwardX, forwardY, forwardZ, upX, upY, upZ));
+
+        instance.val.start();
+        instance.val.release();
+        return jaxe.FMOD.OK;
+    }
+
     //// Events - Managed instances
 
     static fmod_create_instance(eventPath) {
@@ -157,6 +173,30 @@ class jaxe {
     static fmod_set_param(handle, name, value) {
         var inst = jaxe.instances[handle];
         if (inst) inst.setParameterByName(name, value, false);
+    }
+
+    static fmod_set_global_param(name, value) {
+        jaxe.gSystem.setParameterByName(name, value, false);
+    }
+
+    //// 3D Audio
+
+    static buildAttributes(posX, posY, posZ, velX, velY, velZ, forwardX, forwardY, forwardZ, upX, upY, upZ) {
+        return {
+            position: { x: posX, y: posY, z: posZ },
+            velocity: { x: velX, y: velY, z: velZ },
+            forward: { x: forwardX, y: forwardY, z: forwardZ },
+            up: { x: upX, y: upY, z: upZ }
+        };
+    }
+
+    static fmod_set_listener_attributes(listener, posX, posY, posZ, velX, velY, velZ, forwardX, forwardY, forwardZ, upX, upY, upZ) {
+        jaxe.gSystem.setListenerAttributes(listener, jaxe.buildAttributes(posX, posY, posZ, velX, velY, velZ, forwardX, forwardY, forwardZ, upX, upY, upZ), null);
+    }
+
+    static fmod_set_instance_3d_attributes(handle, posX, posY, posZ, velX, velY, velZ, forwardX, forwardY, forwardZ, upX, upY, upZ) {
+        var inst = jaxe.instances[handle];
+        if (inst) inst.set3DAttributes(jaxe.buildAttributes(posX, posY, posZ, velX, velY, velZ, forwardX, forwardY, forwardZ, upX, upY, upZ));
     }
 
     //// Bus

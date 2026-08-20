@@ -173,6 +173,32 @@ HL_PRIM int HL_NAME(fire_one_shot)(vbyte* eventPath) {
 }
 DEFINE_PRIM(_I32, fire_one_shot, _BYTES);
 
+HL_PRIM int HL_NAME(fire_one_shot_at)(vbyte* eventPath, double posX, double posY, double posZ, double velX, double velY, double velZ,
+    double forwardX, double forwardY, double forwardZ, double upX, double upY, double upZ) {
+    if (!gStudioSystem) return FMOD_ERR_NOTREADY;
+
+    FMOD_STUDIO_EVENTDESCRIPTION* desc;
+    FMOD_RESULT result = FMOD_Studio_System_GetEvent(gStudioSystem, (const char*)eventPath, &desc);
+    if (result != FMOD_OK) return result;
+
+    FMOD_STUDIO_EVENTINSTANCE* instance;
+    result = FMOD_Studio_EventDescription_CreateInstance(desc, &instance);
+    if (result != FMOD_OK) return result;
+
+    FMOD_3D_ATTRIBUTES attributes = {
+        { (float)posX, (float)posY, (float)posZ },
+        { (float)velX, (float)velY, (float)velZ },
+        { (float)forwardX, (float)forwardY, (float)forwardZ },
+        { (float)upX, (float)upY, (float)upZ }
+    };
+    FMOD_Studio_EventInstance_Set3DAttributes(instance, &attributes);
+
+    FMOD_Studio_EventInstance_Start(instance);
+    FMOD_Studio_EventInstance_Release(instance);
+    return FMOD_OK;
+}
+DEFINE_PRIM(_I32, fire_one_shot_at, _BYTES _F64 _F64 _F64 _F64 _F64 _F64 _F64 _F64 _F64 _F64 _F64 _F64);
+
 //// Events - Managed instances
 
 HL_PRIM int HL_NAME(create_instance)(vbyte* eventPath) {
@@ -252,6 +278,42 @@ HL_PRIM void HL_NAME(set_param)(int h, vbyte* name, double value) {
         FMOD_Studio_EventInstance_SetParameterByName(gInstances[h], (const char*)name, (float)value, false);
 }
 DEFINE_PRIM(_VOID, set_param, _I32 _BYTES _F64);
+
+HL_PRIM void HL_NAME(set_global_param)(vbyte* name, double value) {
+    if (!gStudioSystem) return;
+    FMOD_Studio_System_SetParameterByName(gStudioSystem, (const char*)name, (float)value, false);
+}
+DEFINE_PRIM(_VOID, set_global_param, _BYTES _F64);
+
+//// 3D Audio
+
+HL_PRIM void HL_NAME(set_listener_attributes)(int listener, double posX, double posY, double posZ, double velX, double velY, double velZ,
+    double forwardX, double forwardY, double forwardZ, double upX, double upY, double upZ) {
+    if (!gStudioSystem) return;
+
+    FMOD_3D_ATTRIBUTES attributes = {
+        { (float)posX, (float)posY, (float)posZ },
+        { (float)velX, (float)velY, (float)velZ },
+        { (float)forwardX, (float)forwardY, (float)forwardZ },
+        { (float)upX, (float)upY, (float)upZ }
+    };
+    FMOD_Studio_System_SetListenerAttributes(gStudioSystem, listener, &attributes, NULL);
+}
+DEFINE_PRIM(_VOID, set_listener_attributes, _I32 _F64 _F64 _F64 _F64 _F64 _F64 _F64 _F64 _F64 _F64 _F64 _F64);
+
+HL_PRIM void HL_NAME(set_instance_3d_attributes)(int h, double posX, double posY, double posZ, double velX, double velY, double velZ,
+    double forwardX, double forwardY, double forwardZ, double upX, double upY, double upZ) {
+    if (h < 0 || h >= gInstanceCount || !gInstances[h]) return;
+
+    FMOD_3D_ATTRIBUTES attributes = {
+        { (float)posX, (float)posY, (float)posZ },
+        { (float)velX, (float)velY, (float)velZ },
+        { (float)forwardX, (float)forwardY, (float)forwardZ },
+        { (float)upX, (float)upY, (float)upZ }
+    };
+    FMOD_Studio_EventInstance_Set3DAttributes(gInstances[h], &attributes);
+}
+DEFINE_PRIM(_VOID, set_instance_3d_attributes, _I32 _F64 _F64 _F64 _F64 _F64 _F64 _F64 _F64 _F64 _F64 _F64 _F64);
 
 //// Bus
 

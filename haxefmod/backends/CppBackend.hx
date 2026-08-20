@@ -79,6 +79,14 @@ class CppBackend implements IFmodBackend {
         }
     }
 
+    public function createEventInstanceOneShotAt(eventPath:String, posX:Float, posY:Float, posZ:Float, velX:Float, velY:Float, velZ:Float,
+            forwardX:Float, forwardY:Float, forwardZ:Float, upX:Float, upY:Float, upZ:Float):Void {
+        var result = CppFmod.fmod_fire_one_shot_at(eventPath, posX, posY, posZ, velX, velY, velZ, forwardX, forwardY, forwardZ, upX, upY, upZ);
+        if (result != 0) {
+            log('Failed to fire one-shot at position $eventPath (error $result)');
+        }
+    }
+
     public function createEventInstance(eventPath:String):FmodEventHandle {
         var handle = CppFmod.fmod_create_instance(eventPath);
         if (handle >= 0) {
@@ -132,6 +140,22 @@ class CppBackend implements IFmodBackend {
 
     public function setEventInstanceParam(handle:FmodEventHandle, paramName:String, value:Float):Void {
         CppFmod.fmod_set_param(handle, paramName, value);
+    }
+
+    public function setGlobalParameter(paramName:String, value:Float):Void {
+        CppFmod.fmod_set_global_param(paramName, value);
+    }
+
+    //// 3D Audio
+
+    public function setListenerAttributes(listener:Int, posX:Float, posY:Float, posZ:Float, velX:Float, velY:Float, velZ:Float,
+            forwardX:Float, forwardY:Float, forwardZ:Float, upX:Float, upY:Float, upZ:Float):Void {
+        CppFmod.fmod_set_listener_attributes(listener, posX, posY, posZ, velX, velY, velZ, forwardX, forwardY, forwardZ, upX, upY, upZ);
+    }
+
+    public function setEventInstance3DAttributes(handle:FmodEventHandle, posX:Float, posY:Float, posZ:Float, velX:Float, velY:Float, velZ:Float,
+            forwardX:Float, forwardY:Float, forwardZ:Float, upX:Float, upY:Float, upZ:Float):Void {
+        CppFmod.fmod_set_instance_3d_attributes(handle, posX, posY, posZ, velX, velY, velZ, forwardX, forwardY, forwardZ, upX, upY, upZ);
     }
 
     //// Bus operations
@@ -201,6 +225,10 @@ private extern class CppFmod {
     @:native("linc::faxe::fmod_fire_one_shot")
     static function fmod_fire_one_shot(eventPath:String):Int;
 
+    @:native("linc::faxe::fmod_fire_one_shot_at")
+    static function fmod_fire_one_shot_at(eventPath:String, posX:Float, posY:Float, posZ:Float, velX:Float, velY:Float, velZ:Float,
+        forwardX:Float, forwardY:Float, forwardZ:Float, upX:Float, upY:Float, upZ:Float):Int;
+
     @:native("linc::faxe::fmod_create_instance")
     static function fmod_create_instance(eventPath:String):Int;
 
@@ -228,6 +256,18 @@ private extern class CppFmod {
 
     @:native("linc::faxe::fmod_set_param")
     static function fmod_set_param(handle:Int, name:String, value:Float):Void;
+
+    @:native("linc::faxe::fmod_set_global_param")
+    static function fmod_set_global_param(name:String, value:Float):Void;
+
+    // 3D Audio
+    @:native("linc::faxe::fmod_set_listener_attributes")
+    static function fmod_set_listener_attributes(listener:Int, posX:Float, posY:Float, posZ:Float, velX:Float, velY:Float, velZ:Float,
+        forwardX:Float, forwardY:Float, forwardZ:Float, upX:Float, upY:Float, upZ:Float):Void;
+
+    @:native("linc::faxe::fmod_set_instance_3d_attributes")
+    static function fmod_set_instance_3d_attributes(handle:Int, posX:Float, posY:Float, posZ:Float, velX:Float, velY:Float, velZ:Float,
+        forwardX:Float, forwardY:Float, forwardZ:Float, upX:Float, upY:Float, upZ:Float):Void;
 
     // Bus
     @:native("linc::faxe::fmod_set_bus_paused")

@@ -69,6 +69,14 @@ class JsBackend implements IFmodBackend {
         }
     }
 
+    public function createEventInstanceOneShotAt(eventPath:String, posX:Float, posY:Float, posZ:Float, velX:Float, velY:Float, velZ:Float,
+            forwardX:Float, forwardY:Float, forwardZ:Float, upX:Float, upY:Float, upZ:Float):Void {
+        var result = JsFmod.fmod_fire_one_shot_at(eventPath, posX, posY, posZ, velX, velY, velZ, forwardX, forwardY, forwardZ, upX, upY, upZ);
+        if (result != 0) {
+            log('Failed to fire one-shot at position $eventPath (error $result)');
+        }
+    }
+
     public function createEventInstance(eventPath:String):FmodEventHandle {
         var handle = JsFmod.fmod_create_instance(eventPath);
         if (handle >= 0) {
@@ -122,6 +130,22 @@ class JsBackend implements IFmodBackend {
 
     public function setEventInstanceParam(handle:FmodEventHandle, paramName:String, value:Float):Void {
         JsFmod.fmod_set_param(handle, paramName, value);
+    }
+
+    public function setGlobalParameter(paramName:String, value:Float):Void {
+        JsFmod.fmod_set_global_param(paramName, value);
+    }
+
+    //// 3D Audio
+
+    public function setListenerAttributes(listener:Int, posX:Float, posY:Float, posZ:Float, velX:Float, velY:Float, velZ:Float,
+            forwardX:Float, forwardY:Float, forwardZ:Float, upX:Float, upY:Float, upZ:Float):Void {
+        JsFmod.fmod_set_listener_attributes(listener, posX, posY, posZ, velX, velY, velZ, forwardX, forwardY, forwardZ, upX, upY, upZ);
+    }
+
+    public function setEventInstance3DAttributes(handle:FmodEventHandle, posX:Float, posY:Float, posZ:Float, velX:Float, velY:Float, velZ:Float,
+            forwardX:Float, forwardY:Float, forwardZ:Float, upX:Float, upY:Float, upZ:Float):Void {
+        JsFmod.fmod_set_instance_3d_attributes(handle, posX, posY, posZ, velX, velY, velZ, forwardX, forwardY, forwardZ, upX, upY, upZ);
     }
 
     //// Bus operations
@@ -179,6 +203,8 @@ private extern class JsFmod {
 
     // Events
     public static function fmod_fire_one_shot(eventPath:String):Int;
+    public static function fmod_fire_one_shot_at(eventPath:String, posX:Float, posY:Float, posZ:Float, velX:Float, velY:Float, velZ:Float,
+        forwardX:Float, forwardY:Float, forwardZ:Float, upX:Float, upY:Float, upZ:Float):Int;
     public static function fmod_create_instance(eventPath:String):Int;
     public static function fmod_start(handle:Int):Void;
     public static function fmod_stop(handle:Int, immediate:Int):Void;
@@ -190,6 +216,13 @@ private extern class JsFmod {
     // Parameters
     public static function fmod_get_param(handle:Int, name:String):Float;
     public static function fmod_set_param(handle:Int, name:String, value:Float):Void;
+    public static function fmod_set_global_param(name:String, value:Float):Void;
+
+    // 3D Audio
+    public static function fmod_set_listener_attributes(listener:Int, posX:Float, posY:Float, posZ:Float, velX:Float, velY:Float, velZ:Float,
+        forwardX:Float, forwardY:Float, forwardZ:Float, upX:Float, upY:Float, upZ:Float):Void;
+    public static function fmod_set_instance_3d_attributes(handle:Int, posX:Float, posY:Float, posZ:Float, velX:Float, velY:Float, velZ:Float,
+        forwardX:Float, forwardY:Float, forwardZ:Float, upX:Float, upY:Float, upZ:Float):Void;
 
     // Bus
     public static function fmod_set_bus_paused(path:String, paused:Bool):Void;

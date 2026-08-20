@@ -39,6 +39,10 @@ interface IFmodBackend {
     /** Creates a one-shot event (plays immediately, auto-releases when done) */
     function createEventInstanceOneShot(eventPath:String):Void;
 
+    /** Creates a one-shot event at a 3D position (plays immediately, auto-releases when done) */
+    function createEventInstanceOneShotAt(eventPath:String, posX:Float, posY:Float, posZ:Float, velX:Float, velY:Float, velZ:Float,
+        forwardX:Float, forwardY:Float, forwardZ:Float, upX:Float, upY:Float, upZ:Float):Void;
+
     /**
      * Creates an event instance and returns a handle to control it.
      * Returns -1 if creation failed.
@@ -72,6 +76,19 @@ interface IFmodBackend {
     //// Parameters
     function getEventInstanceParam(handle:FmodEventHandle, paramName:String):Float;
     function setEventInstanceParam(handle:FmodEventHandle, paramName:String, value:Float):Void;
+
+    /** Sets a global parameter value by name, including the path if needed. */
+    function setGlobalParameter(paramName:String, value:Float):Void;
+
+    //// 3D Audio
+
+    /** Sets the 3D attributes (position, velocity, orientation) of a listener. */
+    function setListenerAttributes(listener:Int, posX:Float, posY:Float, posZ:Float, velX:Float, velY:Float, velZ:Float,
+        forwardX:Float, forwardY:Float, forwardZ:Float, upX:Float, upY:Float, upZ:Float):Void;
+
+    /** Sets the 3D attributes (position, velocity, orientation) of an event instance. */
+    function setEventInstance3DAttributes(handle:FmodEventHandle, posX:Float, posY:Float, posZ:Float, velX:Float, velY:Float, velZ:Float,
+        forwardX:Float, forwardY:Float, forwardZ:Float, upX:Float, upY:Float, upZ:Float):Void;
 
     //// Bus operations
     function setPauseForAllEventsOnBus(busPath:String, shouldBePaused:Bool):Void;
